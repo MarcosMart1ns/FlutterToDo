@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "472499826064",
+    "firebase_url": "https://marcos-todo.firebaseio.com",
+    "project_id": "marcos-todo",
+    "storage_bucket": "marcos-todo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:472499826064:android:f2b5eb5aa17a8ca7161715",
+        "android_client_info": {
+          "package_name": "com.example.todo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "472499826064-vlq2nncv0527kdbpasmtsrs709lrmn6t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDeU2Fdl6vrNcrWbrvzC0IHUzKEv9NxTzI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "472499826064-vlq2nncv0527kdbpasmtsrs709lrmn6t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

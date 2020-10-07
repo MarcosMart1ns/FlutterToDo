@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
+// ignore: implementation_imports
 
 void main() {
   runApp(MyApp());
@@ -34,6 +37,24 @@ class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController inputController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   List<String> _tasks = List();
+
+  final DBRef = FirebaseDatabase.instance.reference();
+
+  // Define an async function to initialize FlutterFire
+  void initializeFlutterFire() async {
+    // Wait for Firebase to initialize and set `_initialized` state to true
+    await Firebase.initializeApp();
+  }
+
+  @override
+  void initState() {
+    initializeFlutterFire();
+    super.initState();
+  }
+
+  void test() {
+    DBRef.child('/mobile').once().then((value) => print(value.value));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +118,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       onPressed: () {
                         if (_formKey.currentState.validate()) {
                           setState(() {
-                            _tasks.add(inputController.text);
+                            DBRef.child('/mobile')
+                                .push()
+                                .set({'note': inputController.text});
                           });
                           inputController.clear();
                         }
@@ -120,15 +143,17 @@ class _MyHomePageState extends State<MyHomePage> {
                   ));
                 },
               ),
-            )
+            ),
           ],
         ),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: _incrementCounter,
-      //   tooltip: 'Increment',
-      //   child: Icon(Icons.add),
-      // ), // This trailing comma makes auto-formatting nicer for build methods.
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          test();
+        },
+        tooltip: 'testa conexao',
+        child: Icon(Icons.add),
+      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
