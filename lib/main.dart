@@ -31,12 +31,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final TextEditingController inputController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  List<String> _tasks = List();
+
   @override
   Widget build(BuildContext context) {
-    final TextEditingController inputController = TextEditingController();
-    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-    List<String> _tasks = List();
-
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.teal,
       systemNavigationBarColor: Colors.teal,
@@ -65,58 +65,60 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Form(
+                key: _formKey,
                 child: Row(children: [
-              Expanded(
-                child: TextFormField(
-                  key: _formKey,
-                  validator: (value) {
-                    print(value);
-                    if (value.trim().isEmpty) {
-                      return 'Task Field it\'s required';
-                    }
-                    return null;
-                  },
-                  controller: inputController,
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: Colors.black87,
-                    fontFamily: 'monospace',
+                  Expanded(
+                    child: TextFormField(
+                      validator: (value) {
+                        if (value.trim().isEmpty) {
+                          return 'Task Field it\'s required';
+                        }
+                        return null;
+                      },
+                      controller: inputController,
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.black87,
+                        fontFamily: 'monospace',
+                      ),
+                      decoration: InputDecoration(
+                        hintText: 'Escreva aqui uma nova tarefa',
+                      ),
+                      keyboardType: TextInputType.text,
+                    ),
                   ),
-                  decoration: InputDecoration(
-                    hintText: 'Escreva aqui uma nova tarefa',
+                  Container(
+                    margin: EdgeInsets.only(left: 30),
+                    child: RaisedButton(
+                      child: Text(
+                        'Add',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      onPressed: () {
+                        if (_formKey.currentState.validate()) {
+                          setState(() {
+                            _tasks.add(inputController.text);
+                          });
+                          inputController.clear();
+                        }
+                      },
+                      textColor: Colors.white,
+                      color: Colors.teal,
+                    ),
                   ),
-                  keyboardType: TextInputType.text,
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 30),
-                child: RaisedButton(
-                  child: Text(
-                    'Add',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  onPressed: () {
-                    if (inputController.text != '') {
-                      setState(() {
-                        _tasks.add(inputController.text);
-                      });
-                      inputController.clear();
-                    }
-                  },
-                  textColor: Colors.white,
-                  color: Colors.teal,
-                ),
-              ),
-            ])),
+                ])),
             Expanded(
               child: ListView.builder(
-                itemBuilder: (context, index) {
+                itemCount: _tasks.length,
+                itemBuilder: (
+                  context,
+                  index,
+                ) {
                   return Card(
                       child: ListTile(
                     title: Text(_tasks[index]),
                   ));
                 },
-                itemCount: _tasks.length,
               ),
             )
           ],
