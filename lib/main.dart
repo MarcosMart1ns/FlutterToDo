@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 // ignore: implementation_imports
 
 void main() {
@@ -37,7 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController inputController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   List<String> _tasks = List();
-
+  // ignore: non_constant_identifier_names
   final DBRef = FirebaseDatabase.instance.reference();
 
   // Define an async function to initialize FlutterFire
@@ -49,12 +50,11 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     initializeFlutterFire();
+    print('reiniciou');
     super.initState();
   }
 
-  void test() {
-    DBRef.child('/mobile').once().then((value) => print(value.value));
-  }
+  void read() {}
 
   @override
   Widget build(BuildContext context) {
@@ -66,8 +66,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use ita to set our appbar title.
         title: Center(child: Text(widget.title)),
       ),
       drawer: Drawer(
@@ -123,6 +121,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 .set({'note': inputController.text});
                           });
                           inputController.clear();
+                          read();
                         }
                       },
                       textColor: Colors.white,
@@ -131,29 +130,38 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ])),
             Expanded(
-              child: ListView.builder(
-                itemCount: _tasks.length,
-                itemBuilder: (
-                  context,
-                  index,
-                ) {
-                  return Card(
-                      child: ListTile(
-                    title: Text(_tasks[index]),
-                  ));
-                },
-              ),
-            ),
+                child: FirebaseAnimatedList(
+              query: DBRef.child('/mobile'),
+              itemBuilder: (context, snapshot, animation, index) {
+                return Card(
+                    child: ListTile(
+                  title: Text("$index: ${snapshot.value.toString()}"),
+                  trailing: IconButton(
+                    onPressed: () {
+                      DBRef.child('/mobile').child(snapshot.key).remove();
+                    },
+                    icon: Icon(Icons.delete),
+                  ),
+                ));
+              },
+            )
+                // ListView.builder(
+                //   itemCount: _tasks.length,
+                //   itemBuilder: (
+                //     context,
+                //     index,
+                //   ) {
+                //     return Card(
+                //         child: ListTile(
+                //       title: Text(_tasks[index]),
+                //     ));
+                //   },
+                // ),
+                ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          test();
-        },
-        tooltip: 'testa conexao',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
