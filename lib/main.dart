@@ -37,7 +37,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController inputController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  List<String> _tasks = List();
   // ignore: non_constant_identifier_names
   final DBRef = FirebaseDatabase.instance.reference();
 
@@ -135,7 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
               itemBuilder: (context, snapshot, animation, index) {
                 return Card(
                     child: ListTile(
-                  title: Text("$index: ${snapshot.value.toString()}"),
+                  title: Text(snapshot.value.toString()),
                   trailing: IconButton(
                     onPressed: () {
                       DBRef.child('/mobile').child(snapshot.key).remove();
@@ -144,20 +143,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ));
               },
-            )
-                // ListView.builder(
-                //   itemCount: _tasks.length,
-                //   itemBuilder: (
-                //     context,
-                //     index,
-                //   ) {
-                //     return Card(
-                //         child: ListTile(
-                //       title: Text(_tasks[index]),
-                //     ));
-                //   },
-                // ),
-                ),
+            )),
           ],
         ),
       ),
